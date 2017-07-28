@@ -1,8 +1,37 @@
+/*
+题目内容：
+ 数一堆硬币，x1个一拨，则余下y1个；
+             x2个一拨，则余下y2个；
+             。。。
+             xn个一拨，则余下yn个；
+
+问最少有几个硬币
+输入描述
+第一行输入整数n
+第二行是x1 x2 .. xn
+第三行是y1 y2 .. yn
+
+输出描述
+最少的硬币数目
+
+输入样例
+2
+14 57
+5 56
+
+输出样例
+341
+*/ 
 #include<iostream>
 #include<cstdio>
 using namespace std;
 int M[10],R[10];
 typedef long long LL;
+
+LL gcd(LL a,LL b){
+	while(a&&b) a>b?a=a%b:b=b%a;
+	return a+b;
+}
 
 LL ext_gcd(LL a,LL b, LL& x, LL& y){
 	if(b==0){
@@ -59,9 +88,11 @@ LL china_remain(int n){
 		r1 = a * x + r1; 
 		a = a * b / d; //新的a 为 a和b的最小公倍数,LCM(a,b) = a*b/GCD(a,b)
 	}
+	
 	if(r1 == 0){
 		r1 = 1;
-		for(int i=0;i<n;++i) r1*= M[i];
+		for(int i=0;i<n;++i) r1 = r1 * M[i] / gcd(r1,M[i]);
+		printf("r1==0\n");
 	}
 	return r1;
 }
