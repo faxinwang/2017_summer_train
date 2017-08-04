@@ -51,7 +51,7 @@ int main(){
 		printf("forever");
 		return 0;
 	}
-	//由题可得方程：A + Cx ?= B (mod 2^k) (可能等于)
+	//由题可得方程：A + Cx = B (mod 2^k) (可能成立)
 	
 	//1.化简方程为求线性同余方程标准式 ax ≡ n (mod b);
 	LL a = C;
@@ -69,8 +69,8 @@ int main(){
 		//3.根据公式 x = x0 * n / g 算出原方程的解
 		// a * x + b * y = n
 		// a * x0 + b * y0 = g 
-		// a * x0(n / g) + b * y0(n / g) = g(n/g) = n 
-		// x = x0(n / g)
+		// a * x0 * (n / g) + b * y0 * (n / g) = g * (n / g) = n 
+		// x = x0 * (n / g)
 		LL x = x0 * n / g; 
 		//4.利用周期性变化求最小的非负整数解 公式: x1 = (x % (b/g) + (b/g) ) % (b/g);
 		//x%T使解落到区间(-T,T), x%T+T使解落到区间(0,2T), 

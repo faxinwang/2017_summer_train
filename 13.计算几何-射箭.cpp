@@ -48,6 +48,11 @@ NO
 	如果点a落在线段cd上, 则向量ca与向量cd重合,其叉积为0,并且点c,d一定在线段ab的两侧,即 
 	(caxcd)==0 && (baxbc)*(baxbd)<0
 
+解题思路二:
+由于多边形a[i]的点是按照顺序给出的(本题是顺时针给出),如果点p在多边形里面, 
+则从向量pa[i]到向量pa[i+1]均为相同的顺序,所以他们的叉乘具有相同的正负号.
+如果p在多边形a[i]里外面, 则一定存在一对向量pa[i],pa[i+1]与前面的pa[i-1]和pa[i]
+顺序不同,所以他们的叉乘具有不同的正负号.由此即可判断点p是否在多边形内. 
 */
 
 #include<iostream>
@@ -63,6 +68,11 @@ struct Point{
 }p[maxn];
 typedef Point Vector;
 
+Vector operator - (const Point& a,const Point& b){return Vector(b.x-a.x, b.y-a.y);}
+
+double cross(const Vector& a,const Vector& b){return a.x*b.y - b.x*a.y;}
+
+/*
 //返回向量ab,ac的叉乘
 int cross(Point& a, Point& b,Point& c){
 	Vector ab(b.x - a.x, b.y - a.y);
@@ -92,6 +102,16 @@ bool inPolygon(Point p[], int n, Point &a){
 	}
 	return false;
 }
+*/
+
+//判断点p是否在给定的多边形内(解法二)
+bool inPolygon2(Point p[],int n,Point& a){
+	//顺时针,叉乘值为负 
+	for(int i=0;i<n;++i){
+		if(cross(p[i] - a, p[(i+1)%n]-a) > 0) return false;
+	}
+	return true;
+}
 
 int main(){
 #ifdef WFX
@@ -104,7 +124,7 @@ freopen("13 in.txt","r",stdin);
 	scanf("%d",&m);
 	for(int i=0;i<m;++i){
 		scanf("%d%d",&a.x, &a.y);
-		if( inPolygon( p, n , a ) ) printf("YES\n");
+		if( inPolygon2( p, n , a ) ) printf("YES\n");
 		else printf("NO\n"); 
 	}
 	

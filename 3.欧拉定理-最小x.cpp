@@ -21,10 +21,10 @@
 2. 如果x是满足a^x==1 (mod n)的最小正数解，则 x一定是phi(n)的约数(注意并不是
    所有的约数都满足a^x==1 (mod n) ) 
 证明: 
-	如果x是满足ax≡1 (mod n)的最小的正x, 则x<= ? (n)
-	则令? (n)=tx+d, 其中余数d小于x, 则 a?(n)=a tx+d,=atx.ad
-	因此满足ad=1(mod n) , 由于x是最小的，因此只好d=0
-	故x整除? (n)
+	如果x是满足ax≡1 (mod n)的最小的正x, 则x<= phi(n)
+	则令phi(n)=tx+d, 其中余数d小于x, 则 a^phi(n)=a^(tx+d)=a^tx * a^d
+	因此满足a^d=1(mod n) , 由于x是最小的，因此只好d=0
+	故x整除phi(n)
 
 3. 满足条件的最小正整数d记为ord_m(a)，叫做a模m的阶。
 4. 若对于一个正整数a满足
