@@ -35,9 +35,9 @@
 
 判断点c在直线ab的位置关系: 
 如果a.x < b.x  且 a.x <= c.x <= b.x 
-	如果 ab与 ac 的叉乘大于0,说明 ab 到 ac是顺时针旋转, c在ab下方
-	如果 ab与 ac 的叉乘小于0,说明 ab 到 ac是逆时针旋转, c在ab上方
-	如果 ab与 ac 的叉乘等于0,说明 ab 与 ac重合, c在线段ab上. 
+	如果 ab与 ac 的叉乘大于0,说明 ab 到 ac 是逆时针旋转, c在ab上方
+	如果 ab与 ac 的叉乘小于0,说明 ab 到 ac 是顺时针旋转, c在ab下方 
+	如果 ab与 ac 的叉乘等于0,说明 ab 与 ac 重合, c在线段ab上. 
 */ 
 
 #include<iostream> 
