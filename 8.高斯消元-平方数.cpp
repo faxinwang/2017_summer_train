@@ -56,80 +56,78 @@ Pm	Rm1*x1	Rm1*x2	Rm3*x3 ...	Rmn*xn
 要减去一个都不选的情况,因为题目要求至少选择一个正整数)
 */
 
-#include <iostream>
+#include<iostream>
 #include<cstdio>
+#include<cstring>
+#define maxn 2005
 using namespace std;
-const int Max = 2005;
-const int Mod = 1000000007;
-bool vis[Max];
-char mtx[500][305];
-int  p[500]; //初步估计小于2000的质数不超过1000个
+const int MOD = 1e9+7;
+int vis[maxn], p[maxn];
+int mtx[maxn][500];
 
+//找出2000以内的素数,返回素数个数 
 int init(){
 	int cnt=0;
-	for(int i=2; i<Max; ++i){
+	for(int i=2; i<maxn; ++i)
 		if(!vis[i]){
 			p[cnt++] = i;
-			for(int j=i*i; j<=Max; j+=i) vis[j] = 1;
+			for(int j=i*i; j<maxn; j+=i) vis[j] = 1;
 		}
-	}
 	return cnt;
 }
 
-//计算a^n % Mod 
-int quick_mod(int a,int n){
-	int ans = 1, x = a % Mod;
-	while(n){
-		if(n&1) ans = ans * x % Mod;
-		x = x * x % Mod;
-		n >>= 1;
+long long quick_mod(long long a, long long b){
+	long long res = 1;
+	while(b){
+		if(b&1) res = res * a % MOD;
+		a = a * a % MOD;
+		b >>= 1; 
 	}
-	return ans;
+	return res;
 }
 
 //高斯消元 
-int rank(char a[][305], int m , int n )  
-{  
-    int i = 0 , j = 0 , k , r , u;  
-    while( i < m && j < n )  
-    {  
-        r = i;  
-        for( k = i; k < m; k++ )  
-            if ( a[k][j] ) {r = k;break;}  
-        if ( a[r][j] )  
-        {  
-            if ( r != i )  
-                for( k = 0; k <= n; k++ ) swap( a[r][k] , a[i][k] );  
-            for( u = i + 1; u < m; u++ )  
-                if ( a[u][j] )  
-                for( k = i; k <= n; k++ )   a[u][k] ^= a[i][k];  
-            i++;  
-        }  
-        j++;  
-    } 
-    return i;  
-}  
+int Rank(int m, int n){
+	int i=0,j=0,r,u;
+	while(i<m && j<n){
+		for(r=i; mtx[r][j]==0 && r<m; ++r);
+		if(mtx[r][j]){
+			if( r != i) swap(mtx[i], mtx[r]);
+//			if( r != i) for(int k=0; k<n; ++k) swap(mtx[r][k],mtx[i][k]);
+			for(u=i+1; u<m; ++u) if(mtx[u][j]) {
+				for(int k=i; k<n; ++k) mtx[u][k] ^= mtx[i][k];
+			}
+			++i;
+		}
+		++j;
+	}
+	return i;
+}
 
 int main(){
 #ifdef WFX
 freopen("8 in.txt","r",stdin);
 #endif
-	int n,a,maxp=0;
-	int prime_n = init(); //找出所有不大于2000的质数并返回个数 
-	scanf("%d",&n);
-	for(int i=0;i<n;++i){
-		scanf("%d",&a);
-		//对a进行质因数分解,结果保存在mtx矩阵中 
-		for(int j=0;j<prime_n && a;++j){
-			while(a % p[j] == 0){
-				a /= p[j];
-				mtx[j][i] ^= 1; //与1异或,效果等于(mtx[j][i]+1)%2
-				//记录分解出的最大的质因数在p数组中的下标 
-				if(maxp < j) maxp = j;
+	int T,n;
+	int cnt = init();
+	scanf("%d",&T);
+	for(int t=1; t<=T; ++t){
+		memset(mtx,0,sizeof(mtx));
+		int maxi = 0 , i;
+		unsigned long long x;
+		scanf("%d",&n);
+		for(int j=0; j<n; ++j){
+			scanf("%lld",&x);
+			//对x进行质因数分解,结果保存在mtx矩阵中
+			for(i=0; i<cnt && x!=1 ; ++i) while(x % p[i] == 0){
+				x/=p[i]; mtx[i][j] ^= 1;//与1异或,效果等于(mtx[j][i]+1)%2
+				maxi = max(maxi,i);
 			}
 		}
+		int free = n  - Rank( maxi+1, n );
+		long long ans = quick_mod(2, free) - 1;
+		printf("Case #%d:\n%lld\n", t, ans);
 	}
-	int r = rank(mtx,maxp+1,n); //返回矩阵的秩 
-	printf("%d",quick_mod(2,n - r) -1);
-	return 0; 
-} 
+	
+	return 0;
+}

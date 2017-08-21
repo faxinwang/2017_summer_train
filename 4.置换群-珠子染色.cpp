@@ -64,28 +64,34 @@ Polya定理：设 G = {a1，a2，…，ag}是 N 个对象的置换群，用 M 种颜色给这 N 个
 using namespace std;
 typedef long long LL;
 
-LL GCD(LL a,LL b){
+LL GCD(LL a, LL b){
 	while(a&&b) a>b?a=a%b:b=b%a;
 	return a+b;
 }
 
 int main(){
 	LL n,sum=0;
-	scanf("%lld",&n);
-	
-	//旋转变换 
-	//n种置换，步长为x的置换的循环节有GCD(x,n)个 
-	for(int x=1;x<=n;++x) sum += pow(3.0, 1.0*GCD(x,n));
-	//翻转变换 
-	if(n&1){
-		sum += n * pow(3.0,(n+1)/2.0); //奇数个珠子，n种翻转方式，每种有(n-1)/2+1个循环节 
-	}else{
-		sum += n/2 * pow(3.0,n/2.0); //旋转轴过两条边,循环节个数是n/2 
-		sum += n/2 * pow(3.0,n/2.0+1); //旋转轴过两个点 ,循环节个数是(n-2)/2+2
-	}
-	//最后除以总的置换个数2n 
-	sum = sum/2/n;
-	printf("%lld",sum);
+	while( cin>>n && n!=-1){
+		if(n==0){ //之前没有考虑0的情况, 导致在poj上ER了两次. 
+			printf("0\n");
+			continue; 
+		} 
+		 
+		//旋转变换 
+		//n种置换，步长为x的置换的循环节有GCD(x,n)个 
+		for(int x=1; x<=n; ++x) sum += pow(3, GCD(x,n));
+		//翻转变换 
+		if(n&1){
+			sum += n * pow(3, (n+1)/2); //奇数个珠子，n种翻转方式，每种有(n-1)/2+1个循环节 
+		}else{
+			sum += n/2 * pow(3, n/2); //旋转轴过两条边,循环节个数是n/2 
+			sum += n/2 * pow(3, n/2+1); //旋转轴过两个点 ,循环节个数是(n-2)/2+2
+		}
+		//最后除以总的置换个数2n 
+		sum = sum/2/n;
+		cout<<sum<<endl;
+		sum = 0;
+	} 
 	
 	return 0;
 }

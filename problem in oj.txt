@@ -1,0 +1,33 @@
+637  （poj3258）二分-跳过去 
+638  (https://vijos.org/p/1782) 二分-教室管理 
+639  (poj2528)线段树-贴海报
+640  (poj3321)树形数组-树的统计  
+641  (poj2492)并查集-臭虫也疯狂  
+642  (北大课件)前缀树-串查找   
+643  (poj1286)置换群-珠子染色   
+644  (poj2115)扩展gcd-时间复杂性   
+645  (hdu3579) 中国剩余定理-数硬币   
+646  (hdu5833) 高斯消元-平方数  
+647  (hdu1695) 莫比乌斯-gcd配对数 
+648  (hdu1395) 最小x
+649  (hdu2892) 空袭计算
+650  (hdu4380) 选房子
+651  (hdu1756）射箭
+652  (poj1704 ）移动棋子
+653  (hdu2176) 取石子
+654  (hdu2853) 二分图-任务安排
+655  (hdu2444) 二分图-安排房间
+656  (poj2396) 网络流-矩阵计算  
+657  (poj2135) 网络流-景点参观 
+
+
+博弈论		http://blog.csdn.net/strangedbly/article/details/51137432
+二分图		http://blog.csdn.net/thundermrbird/article/details/52231639
+高斯消元	http://www.cppblog.com/menjitianya/archive/2014/06/08/207226.html
+莫比乌斯
+		http://www.cnblogs.com/Milkor/p/4464515.html
+		http://www.cnblogs.com/Milkor/p/4474835.html
+		http://www.xuephp.com/main/detail.php?cid=39208
+
+网络流		http://www.cnblogs.com/luweiseu/archive/2012/07/14/2591573.html
+置换群		http://www.doc88.com/p-725223107326.html

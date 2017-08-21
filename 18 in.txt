@@ -1,0 +1,14 @@
+5 8
+abcde
+defg
+cdke
+ab
+f
+abcdkef
+abkef
+bcd
+bca
+add
+ab
+qab
+f

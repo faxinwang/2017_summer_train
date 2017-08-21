@@ -22,6 +22,7 @@
 Êä³öÑùÀı
 341
 */ 
+
 #include<iostream>
 #include<cstdio>
 using namespace std;
@@ -92,7 +93,6 @@ LL china_remain(int n){
 	if(r1 == 0){
 		r1 = 1;
 		for(int i=0;i<n;++i) r1 = r1 * M[i] / gcd(r1,M[i]);
-		printf("r1==0\n");
 	}
 	return r1;
 }
@@ -101,11 +101,14 @@ int main(){
 #ifdef WFX
 freopen("7 in.txt","r",stdin);
 #endif
-	int n;
-	scanf("%d",&n);
-	for(int i=0;i<n;++i) scanf("%lld",&M[i]);
-	for(int i=0;i<n;++i) scanf("%lld",&R[i]);
-	printf("%lld",china_remain(n));
+	int T,n;
+	scanf("%d",&T);
+	for(int t =1; t <= T; ++t){
+		scanf("%d",&n);
+		for(int i=0;i<n;++i) scanf("%lld",&M[i]);
+		for(int i=0;i<n;++i) scanf("%lld",&R[i]);
+		printf("Case %d: %lld\n", t, china_remain(n));
+	}
 	
 	return 0;
 }

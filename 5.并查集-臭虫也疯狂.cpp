@@ -32,7 +32,7 @@ testcase 2:没有发现同性恋
 个树形结构上的. 在代码中通常用数组来表示这棵树.
 并查集有两个常用的接口:
 Find(x): 查询x结点所在树的根结点
-Union(a,b): 合并a,b两个结点所在的树(也常写作merge(a,b))
+Union(a,b): 合并a,b两个结点所在的树(也有人写作merge(a,b))
 本题的主要难点在于理解r[]数组如何表示和维护子结点与父结点或根节点之间的性别关系. 
 由于此处实现的Find()函数进行了路径压缩, 导致所有的树不会超过2层, 两颗树合并后不会超过3层.
 当两颗树合并后, 有颗树中原本处于第二层的子结点会变到第三层,当再次进行路径压缩让这些结点重新
@@ -92,11 +92,18 @@ void Union(int a,int b){
 	
 	5.如果a与pa性别不同, b与pb性别不同,则r[a]为1,r[b]为1, r[pa] = (r[a]+r[b]+1)%2 = 3 % 2 = 1
 		满足pa与pb必须性别不同的关系 
-	所以下式可以正确计算出两颗树合并后两个根节点之间的性别关系
-	在更新r[pa]的值后, pa的子结点的与pa的性别关系会出错,但这个会在下一次查询其子结点时在
-	Find()函数中被更新为正确值. 
+		 
+	如果a,b一个是根结点,一个是叶结点:
+	1.如果a是根结点,b是叶结点, 则pa=a, r[a] = 0,
+		如果b与根结点同性, 则r[b] = 0, r[pa] = ( r[a] + r[b] + 1 )%2 = 1, 满足pa必须与pb性别不同的关系.
+		如果b与根节点异性, 则r[b] = 1, r[pa] = ( r[a] + r[b] + 1 )%2 = 0,  满足pa必须与pb性别相同的关系.
+	2.同理, a是叶结点,b是根节点时也能得到正确的结果. 
+	
+	所以下式总是可以正确计算出两颗树合并后两个根节点之间的性别关系
+	在更新r[pa]的值后, pa的子结点与pa的性别关系可能会出错(当pa不等于a的时候),但这个会在下一次查询其子结
+	点时在Find()函数中被更新为正确值.
 	*/
-	r[pa] = (r[a] + r[b] + 1) % 2; 
+	r[pa] = (r[a] + r[b] + 1) % 2;
 }
 
 
@@ -105,31 +112,28 @@ int main(){
 freopen("5 in.txt","r",stdin);
 #endif
 
-	int T,n,m,a,b;
+	int T,n,m,a,b,fa,fb;
 	scanf("%d",&T);
 	
-	for(int t=1;t<=T;++t){
+	for(int t=1; t<=T; ++t){
 		init();
-		bool flag=1;
+		bool flag  = 0;
 		scanf("%d%d",&n,&m);
-		int fa,fb;
 		for(int i=0;i<m;++i){
 			scanf("%d%d",&a,&b);
-			if(flag){ //没有发现同性恋就继续处理, 一旦发现有同性恋就不需要再做任何处理了 
-			 	//如果a,b属于同一个集合 
-			 	fa = Find(a),fb=Find(b);
-				if(fa==fb){
-					//并且他们跟根节点有相同的关系(都跟根结点是同性/异性)
-					//就说明他们是同性恋 
-					if(r[a] == r[b]) flag=0;
-				}else Union(a,b); //否则将他们放到同一个集合中 
-			}
+			if(flag) continue; //一旦发现有同性恋就不需要再做任何处理了 
+			//如果a,b属于同一个集合 
+			fa = Find(a),fb=Find(b);
+			if(fa==fb){
+				//并且他们跟根节点有相同的关系(都跟根结点是同性/异性)
+				//就说明他们是同性恋 
+				if(r[a] == r[b]) flag=1;
+			}else Union(a,b); //否则将他们放到同一个集合中
 		}
-		if(flag){
-			printf("testcase %d:没有发现同性恋\n",t);
-		}else{
-			printf("testcase %d:发现同性恋\n",t);
-		}
+		if(flag)	printf("Scenario #%d:\nSuspicious bugs found!\n",t);
+		else		printf("Scenario #%d:\nNo suspicious bugs found!\n",t);
+//		for(int i=1; i<=n; ++i) printf("%d ",r[i]);
+		if(t<T) 	printf("\n");
 	}
 	
 	return 0;

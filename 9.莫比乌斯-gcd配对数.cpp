@@ -66,7 +66,7 @@ G(b,d)- G(b,b) / 2
 using namespace std;
 typedef long long LL;
 const int maxn = 1e5+5;
-int mu[maxn],p[maxn];
+LL mu[maxn],p[maxn];
 bool vis[maxn];
 
 /* 
@@ -87,11 +87,12 @@ void init_mu(){
 		}
 		for(int j=0; j<cnt && i*p[j]<maxn; ++j){
 			vis[i*p[j]] = 1;
-			if(i%p[j] == 0){
+			if(i%p[j]){
+				mu[i*p[j]] = -mu[i];
+			}else{
 				mu[i*p[j]] = 0;
 				break;
-			}
-			mu[i*p[j]] = -mu[i];
+			} 
 		}
 	}
 }
@@ -104,10 +105,10 @@ freopen("9 in.txt","r",stdin);
 	int T,a,b,c,d,k;
 	init_mu();
 	scanf("%d",&T);
-	while(T--){
+	for(int t=1; t<=T; ++t){
 		scanf("%d%d%d%d%d",&a,&b,&c,&d,&k);
 		if(k==0){
-			printf("0"); continue;
+			printf("Case %d: 0\n",t); continue;
 		}
 		b/=k, d/=k;
 		LL cnt1=0,cnt2=0;
@@ -116,7 +117,7 @@ freopen("9 in.txt","r",stdin);
 			cnt1 += mu[i]*(b/i)*(d/i);
 			cnt2 += mu[i]*(lim/i)*(lim/i);
 		}
-		printf("%d\n",cnt1-cnt2/2);
+		printf("Case %d: %lld\n", t, cnt1-cnt2/2);
 	}
 	
 	return 0;

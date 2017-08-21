@@ -29,7 +29,7 @@ NO
 */ 
 
 /*
-解题思路:
+解题思路一(只适用于凸多边形):
 判断点是否在给定的多边形上:
 	转换为判断点是否在三角形上,如果点在多边形的某一个三角形上,
 	那么该点就一定在多边形上. 
@@ -48,7 +48,7 @@ NO
 	如果点a落在线段cd上, 则向量ca与向量cd重合,其叉积为0,并且点c,d一定在线段ab的两侧,即 
 	(caxcd)==0 && (baxbc)*(baxbd)<0
 
-解题思路二:
+解题思路二(只适用于凸多边形):
 由于多边形a[i]的点是按照顺序给出的(本题是顺时针给出),如果点p在多边形里面, 
 则从向量pa[i]到向量pa[i+1]均为相同的顺序,所以他们的叉乘具有相同的正负号.
 如果p在多边形a[i]里外面, 则一定存在一对向量pa[i],pa[i+1]与前面的pa[i-1]和pa[i]
@@ -57,75 +57,107 @@ NO
 
 #include<iostream>
 #include<cstdio>
+#include<cmath>
 using namespace std;
 const int maxn = 100+5;
-
+ 
 struct Point{
-	int x,y;
-	Point(int x,int y):x(x),y(y){}
+	double x,y;
+	Point(double x,double y):x(x),y(y){}
 	Point(){}
-	int cross(Point& p){return x*p.y - y*p.x;}
 }p[maxn];
 typedef Point Vector;
+double eps = 1e-10;
 
-Vector operator - (const Point& a,const Point& b){return Vector(b.x-a.x, b.y-a.y);}
+Vector operator - (const Point& a,const Point& b){return Vector(a.x-b.x, a.y-b.y);}
 
 double cross(const Vector& a,const Vector& b){return a.x*b.y - b.x*a.y;}
 
-/*
+double dot(const Vector& a,const Vector& b){ return a.x*b.x + a.y*b.y;}
+
+
+int dcmp(double x){
+    if(fabs(x) < eps)  return 0;
+    else  return x < 0 ? -1 : 1;
+}
+
 //返回向量ab,ac的叉乘
-int cross(Point& a, Point& b,Point& c){
+double cross(Point& a, Point& b,Point& c){
 	Vector ab(b.x - a.x, b.y - a.y);
 	Vector ac(c.x - a.x, c.y - a.y);
-	return ab.cross(ac);
+	return cross(ab,ac);
 }
 
 //判断线段ab,cd是否相交,(不包括某一个点落在另一条线段上的情况)
 bool lineCross(Point& a,Point& b,Point& c, Point& d){
 	return 
-		cross(a,b,c)*cross(a,b,d) < 0 &&  //c,d在ab两侧 
-		cross(c,d,a)*cross(c,d,b) < 0 ; //a,b在cd两侧 
+		dcmp( cross(a,b,c)*cross(a,b,d) ) < 0 &&  //c,d在ab两侧 
+		dcmp( cross(c,d,a)*cross(c,d,b) ) < 0 ; //a,b在cd两侧 
 }
 
 //判断点x是否在三角形abc上(包括在边上) 
 bool inTriangle(Point& a,Point& b,Point& c, Point& x){
-	if(lineCross(a,b,c,x)) return false;
-	if(lineCross(a,c,b,x)) return false;
-	if(lineCross(b,c,a,x)) return false;
+	if( lineCross(a,b,c,x) ) return false;
+	if( lineCross(a,c,b,x) ) return false;
+	if( lineCross(b,c,a,x) ) return false;
 	return true;
 }
 
-//判断点p是否在给定的多边形内 
-bool inPolygon(Point p[], int n, Point &a){
-	for(int i=0;i<n-2; ++i){
-		if( inTriangle( p[i],p[i+1],p[i+2], a) ) return true;
+//判断点p是否在给定的多边形内(只对凸多边形有效)
+//即判断点是否在由n个点组成的n-2个三角形内
+bool inPolygon1(Point p[], int n, Point &a){
+	for(int i=1;i<n-1; ++i){
+		if( inTriangle( p[0], p[i], p[i+1], a) ) return true;
 	}
 	return false;
 }
-*/
 
-//判断点p是否在给定的多边形内(解法二)
+
+//判断点p是否在给定的多边形内(只对凸多边形有效)
 bool inPolygon2(Point p[],int n,Point& a){
-	//顺时针,叉乘值为负 
+	//顺时针,叉乘值为负
 	for(int i=0;i<n;++i){
-		if(cross(p[i] - a, p[(i+1)%n]-a) > 0) return false;
+		double tmp = cross(p[i] - a, p[(i+1)%n] - a);
+		if( dcmp(tmp) > 0) return false;
+		else if(tmp == 0) return true;
 	}
 	return true;
+}
+
+//判断点p是否在线段ab上
+bool onLine(Point& a,Point& b, Point& p){
+	return dcmp( cross(a-p, b-p) )==0 && dcmp( dot(a-p, b-p) )<=0;
+}
+
+//射线法判断点是否在多边形内(对凸/凹多边形都有效)
+//方法是从此点向右引一条射线，判断多边形的边顺时针逆时针穿过此射线次数是否相等，相等则在外面。
+bool inPolygon3(Point p[], int n, Point& a){
+//	cout<<a.x << " " << a.y <<" ";
+	int cnt=0;
+	for(int i=0; i<n; ++i){
+		if(onLine(p[i], p[(i+1)%n], a)) return 1; //点在多边形的边上
+		int k = dcmp( cross(p[(i+1)%n] - p[i],  a - p[i]) );
+		int d1 = dcmp(p[i].y - a.y);
+		int d2 = dcmp(p[i+1].y - a.y);
+		if(k > 0 && d1<=0 && d2>0) ++cnt;
+		if(k < 0 && d2<=0 && d1>0) --cnt;
+	}
+	return cnt!=0;
 }
 
 int main(){
 #ifdef WFX
-freopen("13 in.txt","r",stdin);
+//freopen("13 in.txt","r",stdin);
 #endif 
 	int n,m;
 	Point a;
-	scanf("%d",&n);
-	for(int i=0;i<n;++i) scanf("%d%d",&p[i].x, &p[i].y);
-	scanf("%d",&m);
-	for(int i=0;i<m;++i){
-		scanf("%d%d",&a.x, &a.y);
-		if( inPolygon2( p, n , a ) ) printf("YES\n");
-		else printf("NO\n"); 
+	while( scanf("%d",&n) != -1 ){
+		for(int i=0;i<n;++i) scanf("%lf%lf",&p[i].x, &p[i].y);
+		scanf("%d",&m);
+		for(int i=0;i<m;++i){
+			scanf("%lf%lf",&a.x, &a.y);
+			printf("%s\n", inPolygon3( p, n , a )? "Yes":"No");
+		}
 	}
 	
 	return 0;

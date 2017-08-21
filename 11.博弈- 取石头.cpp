@@ -61,7 +61,7 @@ int main(){
 freopen("11 in.txt","r",stdin);
 #endif
 	int m;
-	while( scanf("%d",&m)!=-1 ){
+	while( scanf("%d",&m)!=-1, m){
 		int ans=0;
 		for(int i=0;i<m;++i){
 			scanf("%d",&a[i]);

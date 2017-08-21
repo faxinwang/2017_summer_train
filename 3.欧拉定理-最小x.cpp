@@ -1,5 +1,5 @@
 /*
-题目内容：
+题目内容： http://acm.hdu.edu.cn/showproblem.php?pid=1395
  给定一个n, 求满足 2^x =1 (mod n)的最小x.
 输入描述
 输入整数n
@@ -89,23 +89,24 @@ int qpow_mod(int a,int x,int mod){
 
 int main(){
 	int n,ans=0;
-	scanf("%d",&n);
-	if( n<=1 || n%2==0){
-		printf("不存在");
-	}else{
-		int phi_n = euler(n) ;
-		//如果phi_n是素数，则phi_n最小的约数就是他本身(这里不考虑1) 
-		if(isPrime(phi_n)) ans = phi_n; 
-		else{
-			for(int x=2; x<=phi_n;++x) if(phi_n%x==0){
-				//判断x是否满足等式2^x==1 (mod n) 
-				if(qpow_mod(2,x,n) == 1){
-					ans=x;break;
+	while(~scanf("%d",&n)){
+		if( n<=1 || n%2==0){
+			printf("2^? mod %d = 1\n",n);
+		}else{
+			int phi_n = euler(n) ;
+			//如果phi_n是素数，则phi_n最小的约数就是他本身(这里不考虑1) 
+			if(isPrime(phi_n)) ans = phi_n; 
+			else{
+				for(int x=2; x<=phi_n;++x) if(phi_n%x==0){
+					//判断x是否满足等式2^x==1 (mod n) 
+					if(qpow_mod(2,x,n) == 1){
+						ans=x;break;
+					}
 				}
 			}
+			printf("2^%d mod %d = 1\n",ans,n);
 		}
-		printf("%d",ans);
 	}
-	
+
 	return 0;
 }

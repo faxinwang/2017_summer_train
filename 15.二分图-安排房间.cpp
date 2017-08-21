@@ -50,7 +50,7 @@ using namespace std;
 vector<int> g[maxn];
 int color[maxn]; //兼任vis数组和color染色标记数组,-1表示未染色,0,1表示被染色为0,1 
 int match[maxn]; //保存配对的点.match[i]为i的匹配点
-int route[maxn]; //标记交替路径上的点.0表示不在交替路径上,1表示在交替路径上 
+int route[maxn]; //9.0表示不在交替路径上,1表示在交替路径上 
 
 bool dfs(int u){
 	for(int i=0,n=g[u].size(); i<n; ++i){
@@ -68,9 +68,15 @@ bool dfs(int u){
 }
 //匈牙利算法求二分图最大匹配数 
 int hungarian(int n){
-	vector<int> X;
 	int ans = 0 ;
-	for(int i=1;i<=n;++i) if( color[i] ) X.push_back(i); //选择出颜色为1的结点 
+	vector<int> X,Y;
+	X.reserve(n);
+	Y.reserve(n);
+	for(int i=1;i<=n;++i)
+		if(color[i]) X.push_back(i);
+		else Y.push_back(i);
+	if(X.size() > Y.size()) X.swap(Y);
+	
 	for(int i=0,n=X.size(); i<n; ++i){
 		if(match[X[i]] == 0){
 			memset(route,0,sizeof(route));
@@ -97,7 +103,7 @@ void dfs(int u,int col){
 //判断给定的无向图是否可分 
 bool dividable(int n){
 	for(int i=1; divFlag && i<=n; ++i){
-		if(color[i]==-1) dfs(i,0); //未被染色,从该点进行dfs
+		if(color[i] == -1) dfs(i,0); //未被染色,从该点进行dfs
 	}
 	return divFlag;
 }

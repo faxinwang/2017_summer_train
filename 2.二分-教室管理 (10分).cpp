@@ -1,5 +1,5 @@
 /*
-题目内容：
+题目内容：https://vijos.org/p/1782
    在大学期间，经常需要租借教室。大到院系举办活动，小到学习小组自习讨论，
 都需要向学校申请借教室。教室的大小功能不同，借教室人的身份不同，借教室
 的手续也不一样。
@@ -67,10 +67,11 @@
 #include<cstdio>
 #include<cstring>
 using namespace std;
+typedef long long LL;
 const int LEN = 1e6+5; //小技巧,避免多写或少写0 
 int R[LEN]; //R[i] 表示第i天能提供申请的房间数 
 int D[LEN],S[LEN],T[LEN]; //分表保存dj,sj,tj 
-int C[LEN]; //差分数组 
+LL C[LEN]; //差分数组 
 int n,m;
 
 //判断前k个人的教室申请安排是否会产生冲突. 
@@ -89,25 +90,25 @@ bool judge(int k){
 
 int main(){
 #ifdef WFX
-freopen("2 in.txt","r",stdin);
+//freopen("2 in.txt","r",stdin);
 #endif
-	int dj,sj,tj;
-	scanf("%d%d",&n,&m);
-	for(int i=1;i<=n; ++i) scanf("%d",&R[i]);
-	for(int i=1;i<=m;++i) scanf("%d%d%d",&D[i],&S[i],&T[i]);
-	//可以首先判断一下所有人全部安排是否会产生冲突. 
-	if(judge(m)){
-		printf("0");
-		return 0;
+	while(~scanf("%d%d",&n,&m)){
+		for(int i=1;i<=n; ++i) scanf("%d",&R[i]);
+		for(int i=1;i<=m;++i) scanf("%d%d%d",&D[i],&S[i],&T[i]);
+		//可以首先判断一下所有人全部安排是否会产生冲突. 
+		if(judge(m)){
+			printf("0\n");
+			return 0;
+		}
+		//如果会产生冲突, 再进行二分查找. 
+		int low=0,high=m,mid;
+		while(low<high){
+			mid = low + (high-low)/2;
+			if(judge(mid)) low = mid+1;
+			else high = mid;
+		}
+		printf("-1\n%d\n",high);		
 	}
-	//如果会产生冲突, 再进行二分查找. 
-	int low=0,high=m,mid;
-	while(low<high){
-		mid = low + (high-low)/2;
-		if(judge(mid)) low = mid+1;
-		else high=low;
-	}
-	printf("%d",high);
 	
 	return 0;
 }

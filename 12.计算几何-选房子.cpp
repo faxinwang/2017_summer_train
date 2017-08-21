@@ -42,23 +42,25 @@
 
 #include<iostream> 
 #include<cstdio>
+#include<cstring>
 #include<algorithm>
 using namespace std;
-const int maxn = 1e3+5;
+const int maxn = 1500;
+typedef long long LL; 
 
 int cnt[maxn][maxn];
 
 struct Point{
-	int x,y;
-	Point(int x,int y):x(x),y(y){}
+	LL x,y; //由于x,y达到了1e5级别, 用int的话计算叉乘是会溢出,需要用LL 
+	Point(LL x,LL y):x(x),y(y){}
 	Point(){}
 	bool operator<(const Point& p)const{
 		return x < p.x;
 	}
-	int cross(const Point& p){return x*p.y - y*p.x;}
+	LL cross(const Point& p){return x*p.y - y*p.x;}
 }p[maxn*2];
 
-int cross(Point& a, Point& b, Point& c){
+LL cross(Point& a, Point& b, Point& c){
 	typedef Point Vector;
 	Vector ab(b.x - a.x, b.y - a.y);
 	Vector ac(c.x - a.x, c.y - a.y);
@@ -69,30 +71,34 @@ int main(){
 #ifdef WFX
 freopen("12 in.txt","r",stdin) ;
 #endif
-	int n,m,ans=0;
-	scanf("%d%d",&n,&m);
-	for(int i=0;i<n;++i) scanf("%d%d",&p[i].x, &p[i].y);
-	for(int i=n,nm=n+m; i<nm; ++i) scanf("%d%d",&p[i].x, &p[i].y);
-	
-	sort(p,p+n);//将房子按x坐标排序 
-	
-	for(int i=0; i<n; ++i){
-		for(int j=i+1; j<n; ++j){
-			for(int k=n,nm=n+m; k<nm; ++k){
-				if( p[i].x < p[k].x && p[k].x < p[j].x && cross(p[i],p[j],p[k]) ) ++cnt[i][j];
+	int n,m,ans,Case=1;
+	while(scanf("%d%d",&n,&m)!= -1){
+		ans = 0;
+		memset(cnt,0,sizeof(cnt));
+		
+		for(int i=0;i<n;++i) scanf("%lld%lld",&p[i].x, &p[i].y);
+		for(int i=n,nm=n+m; i<nm; ++i) scanf("%lld%lld",&p[i].x, &p[i].y);
+		
+		sort(p,p+n);//将房子按x坐标排序 
+		
+		for(int i=0; i<n; ++i){
+			for(int j=i+1; j<n; ++j){
+				for(int k=n,nm=n+m; k<nm; ++k){
+					if( p[i].x < p[k].x && p[k].x < p[j].x && cross(p[i],p[j],p[k]) ) ++cnt[i][j];
+				}
 			}
 		}
-	}
-	
-	for(int i=0; i<n; ++i){
-		for(int j=i+1; j<n; ++j){
-			for(int k=j+1; k<n;++k){
-				if(abs( cnt[i][j] + cnt[j][k] - cnt[i][k] ) & 1) ++ans; 
+		
+		for(int i=0; i<n; ++i){
+			for(int j=i+1; j<n; ++j){
+				for(int k=j+1; k<n;++k){
+					if(abs( cnt[i][j] + cnt[j][k] - cnt[i][k] ) & 1) ++ans; 
+				}
 			}
 		}
+		
+		printf("Case %d: %d\n", Case++, ans);
 	}
-	
-	printf("%d",ans);
 	
 	return 0;
 }

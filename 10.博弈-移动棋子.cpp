@@ -28,15 +28,21 @@
 /*
 解题思路:
 如果棋子数目为偶数个, 则把第一,二个看成一组, 三,四个看成一组, 五,六个看成一组.... 
-没组棋子中间的空格数看成n堆取石子游戏中某一堆石子数,然后就变成了有n堆石子,每次可以从任意
+每组棋子中间的空格数看成n堆取石子游戏中某一堆石子数,然后就变成了有n堆石子,每次可以从任意
 一堆中任意取石子的游戏.
 
 如果有奇数个棋子, 则把第一个棋子前面的空格数看成一堆石子,后面的偶数个同上处理. 自己在纸上画
 一条格子, 用几张小纸片模拟棋子, 拉个小伙伴走几局玩一玩,自然就能明白其中的道理. 
 */
+
+
 #include<iostream>
 #include<cstdio>
+#include<algorithm> 
+#define maxn 1005 
 using namespace std;
+
+int p[maxn];
 
 int main(){
 #ifdef WFX
@@ -45,24 +51,20 @@ freopen("10 in.txt","r",stdin);
 	int n,T;
 	scanf("%d",&T);
 	while(T--){
-		int sum=0,x,y;
+		int sum=0;
 		scanf("%d",&n);
-		if(n^1){ //奇数个棋子, 则先读入第一个棋子的位置 
-			scanf("%d",&sum);
-			--sum;
-			for(int i=1;i<n; i+=2){
-				scanf("%d%d",&x,&y); //每次读取两个棋子的位置, 计算中间有多少个空格 
-				sum ^= y-x-1;
-			}
+		for(int i=0;i<n;++i) scanf("%d",p+i);
+		sort(p,p+n);
+		if(n&1){ //奇数个棋子, 则先读入第一个棋子的位置
+			sum = p[0] - 1;
+			//每次读取两个棋子的位置, 计算中间有多少个空格 
+			for(int i=2;i<n; i+=2) sum ^= p[i] - p[i-1] -1;
 		}else{
-			for(int i=0; i<n;i+=2){
-				scanf("%d%d",&x,&y);
-				sum ^= y-x-1;
-			}
+			for(int i=1; i<n;i+=2) sum ^= p[i]  - p[i-1] - 1;
 		}
 		
-		if(sum) printf("甲\n"); //如果最后异或的结果不为0,则先手胜利,否则后手胜利. 
-		else printf("乙\n"); 
+		if(sum) printf("Georgia will win\n"); //如果最后异或的结果不为0,则先手胜利,否则后手胜利. 
+		else printf("Bob will win\n"); 
 	}
 	
 	return 0;

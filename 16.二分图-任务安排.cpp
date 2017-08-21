@@ -1,3 +1,6 @@
+/*
+http://acm.hdu.edu.cn/showproblem.php?pid=2853
+*/ 
 #include<iostream>
 #include<cstdio>
 #include<cstring>
@@ -12,7 +15,6 @@ int lx[maxn],ly[maxm];
 bool vx[maxn],vy[maxm];
 int slack[maxm],match[maxm];
 int n,m;
-int d;
 
 bool dfs(int x){
 	vx[x] = 1;
@@ -27,7 +29,6 @@ bool dfs(int x){
 			}
 		}else{
 			 if(slack[y] > gap) slack[y] = gap;
-			 if(d > slack[y]) d = slack[y];
 		}
 	}
 	return 0;
@@ -45,19 +46,18 @@ int KM(){
 		while(1){
 			memset(vx,0,sizeof(vx));
 			memset(vy,0,sizeof(vy));
-			d = INF;
 			if(dfs(x)) break;
-//			int d=INF;
-//			for(int y=1; y<=m; ++y) if(!vy[y] && slack[y]<d) d = slack[y];
+			int d=INF;
+			for(int y=1; y<=m; ++y) if(!vy[y] && slack[y]<d) d = slack[y];
 			for(int k=1; k<=n; ++k) if(vx[k]) lx[k] -= d;
 			for(int y=1; y<=m; ++y) 
-				if(vy[y]) vy[y] += d;
+				if(vy[y]) ly[y] += d;
 				else slack[y] -= d;
 		}
 	}
 	
 	int ans=0;
-	for(int y=1;y<=m;++y) if(match[y] != -1) ans += g[match[y]][y];
+	for(int y=1; y<=m; ++y) if(match[y] != -1) ans += g[match[y]][y];
 	return ans;
 }
 

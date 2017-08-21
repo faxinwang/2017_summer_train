@@ -40,44 +40,53 @@ d[i]<d[i+1]
 
 #include<iostream>
 #include<cstdio>
-#define maxn 100005
+#include<algorithm>
+#define maxn 50005
 using namespace std;
+typedef long long LL; 
 
-int L,N,M;
-int a[maxn];
-//假设d是否可以作为上确界 
-int judge(int d){
-	int sum=0,last=0;
+LL L,N,M;
+LL a[maxn];
+//判断d是否可以作为上确界 
+bool judge(LL d){
+	LL sum=0,last=0;
 	for(int i=1; i<=N; ++i){
 		if(a[i] - last<= d) ++sum; //如果当前石头与上一个石头的距离<=d, 说明该石头可以拿走. 
 		else last = a[i]; //否则将当前石头的位置作为下一次计算距离的last值 
 	}
-//	printf("sum=%d ",sum);
-	//如果能移走的石头多余M个,说明d值过大,不可以作为上确界,需要测试更小的d值: High = mid;
-	//如果能移走的石头<=M 个, 说明肯定有更大的d值可以作为上确界,需要测试更大的d值:Low = mid+1; 
-	return sum > M; 
+	//如果能移走的石头>M个,说明d是一个可行的值,接下来要测试跟小的距离,如果没有更小的可行距离, 那么当前d值就是答案.于是让High=mid 
+	//如果能移走的石头<=M个, 说明可能有更大的可行的d值,接下来测试更大的距离,于是让Low = mid+1
+	return sum > M;  //注意点1
 }
 
-int bsearch(){
-	int Low =0, High=L,mid;
+LL bsearch(){
+	LL Low =0, High=L,mid;
 	while(Low < High){
 		mid = Low + (High - Low)/2; 
-		if(judge(mid)) High = mid;
+		if(judge(mid)) High = mid; //注意点2: High变为mid而不是mid-1,因为mid有可能是最大的最短距离.
 		else Low = mid +1 ;
 	}
-	return mid;
+	/*注意点3: 返回的是High,因为最后退出的时候是Low==High,且倒数第二次循环的时候一定是 Low+1==High,且mid=Low 
+	有两种情况导致Low==High:
+		一:judge(mid)返回false,导致Low = mid+1 正好等于High, 退出循环, 此时High是上一次测试得到的可行值,
+			而mid虽然可能可行(有可能judge(mid)返回的时候是sum==M), 但此时mid是小于High的. 
+		二:judge(mid)返回true, High=mid == Low然后退出.
+	*/
+	return High; 
 }
 
 int main(){
 #ifdef WFX
 freopen("1 in.txt", "r", stdin);
 #endif
-	scanf("%d%d%d",&L,&N,&M);
-	for(int i=1;i <= N;++i) scanf("%d",a+i);
-	a[N+1] = L; //N+1的位置保存最后一个石头到起点的距离,为L 
-	N += 1; // 有N+1段距离 
-	
-	printf("%d",bsearch());
+	ios::sync_with_stdio(false);
+	while(cin>>L>>N>>M){
+		for(int i=1;i <= N;++i) cin>>a[i];
+		a[N+1] = L; //N+1的位置保存最后一个石头到起点的距离,为L 
+		N += 1; // 有N+1段距离 
+		sort(a+1,a+N+1);
+		cout<<bsearch()<<endl;
+	}
 	
 	return 0;
 }

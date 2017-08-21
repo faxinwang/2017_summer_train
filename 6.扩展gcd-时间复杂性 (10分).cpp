@@ -27,7 +27,7 @@ A B C k, 其中0<k<32
 #include<iostream>
 #include<cstdio>
 using namespace std;
-typedef long long LL;
+typedef __int64 LL;
 
 LL ext_gcd(LL a,LL b, LL& x,LL &y){
 	if(b==0){
@@ -43,45 +43,43 @@ LL ext_gcd(LL a,LL b, LL& x,LL &y){
 
 int main(){
 #ifdef WFX
-//freopen("6 in.txt","r",stdin);
+freopen("6 in.txt","r",stdin);
 #endif
 	LL A,B,C,k,x=0;
-	cin>>A>>B>>C>>k;
-	if(!A && !B && !C){
-		printf("forever");
-		return 0;
-	}
-	//由题可得方程：A + Cx = B (mod 2^k) (可能成立)
-	
-	//1.化简方程为求线性同余方程标准式 ax ≡ n (mod b);
-	LL a = C;
-	LL n = B-A;
-	LL b = 1LL<<k; 
-	LL x0,y0;
-	
-	//2.扩展欧几里德算法求解线性同余方程 C*x ≡ B-A (mod 2^k);
-	// ax + by = n
-	LL g = ext_gcd(a,b, x0,y0);//计算出a,b的最大公约数d和特解x0,y0 
-	if( n % g ){	//如果g不能整除n则无解
-		printf("forever");
-		return 0;
-	}else{
-		//3.根据公式 x = x0 * n / g 算出原方程的解
-		// a * x + b * y = n
-		// a * x0 + b * y0 = g 
-		// a * x0 * (n / g) + b * y0 * (n / g) = g * (n / g) = n 
-		// x = x0 * (n / g)
-		LL x = x0 * n / g; 
-		//4.利用周期性变化求最小的非负整数解 公式: x1 = (x % (b/g) + (b/g) ) % (b/g);
-		//x%T使解落到区间(-T,T), x%T+T使解落到区间(0,2T), 
-		//(x%T+T)%T使解落到区间(0,T),即得最小整数解 
-		LL T = b / g;
-		LL x1 = (x % T + T) % T;
-		printf("%lld",x1);
+//	ios::sync_with_stdio(false); //找了好半天bug都没问题,把这句注释掉就过了,不知道是什么原因. 
+	while(cin>>A>>B>>C>>k, A || B || C || k){
+		//由题可得方程：A + Cx = B (mod 2^k) (可能成立)
+		
+		//1.化简方程为线性同余方程标准式 ax ≡ n (mod b);
+		LL a = C;
+		LL n = B-A;
+		LL b = (LL)1<<k; 
+		LL x0,y0;
+		
+		//2.扩展欧几里德算法求解线性同余方程 ax ≡ n (mod b);
+		// ax + by = n
+		LL g = ext_gcd(a,b, x0,y0);//计算出a,b的最大公约数g和特解x0,y0 
+		if( n % g ){	//如果g不能整除n则无解
+			printf("FOREVER\n");
+		}else{
+			//3.根据公式 x = x0 * n / g 算出原方程的解
+			// a * x + b * y = n
+			// a * x0 + b * y0 = g 
+			// a * x0 * (n / g) + b * y0 * (n / g) = g * (n / g) = n 
+			// x = x0 * (n / g)
+			LL x = x0 * n / g ;
+			//4.利用周期性变化求最小的非负整数解 公式: x1 = (x % (b/g) + (b/g) ) % (b/g);
+			//x%T使解落到区间(-T,T), x%T+T使解落到区间(0,2T), 
+			//(x%T+T)%T使解落到区间(0,T),即得最小整数解 
+			LL T = b / g;
+			x = (x % T + T) % T;
+			cout<<x<<endl;
+		}		
 	}
 	
 	return 0;
 }
+
 
 /*
 扩展欧几里德算法源于欧几里德算法。
