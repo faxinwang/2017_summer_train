@@ -50,7 +50,7 @@ using namespace std;
 vector<int> g[maxn];
 int color[maxn]; //兼任vis数组和color染色标记数组,-1表示未染色,0,1表示被染色为0,1 
 int match[maxn]; //保存配对的点.match[i]为i的匹配点
-int route[maxn]; //9.0表示不在交替路径上,1表示在交替路径上 
+int route[maxn]; //0表示不在交替路径上,1表示在交替路径上 
 
 bool dfs(int u){
 	for(int i=0,n=g[u].size(); i<n; ++i){

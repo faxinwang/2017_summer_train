@@ -44,8 +44,8 @@ Q 1
 #include<iostream> 
 #include<cstdio>
 #include<vector>
-#include<cstring>
-#define lowbit(x) (x&-x)
+#include<cstring>	
+#define lowbit(x) ((x)&(-x))
 #define maxn 100005
 using namespace std;
 int n,m,num;
